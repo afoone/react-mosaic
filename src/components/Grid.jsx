@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { WidthProvider, Responsive } from 'react-grid-layout'
 import ComponentFactory from './customcomponents/factory/ComponentFactory';
 import { v4 as uuid } from 'uuid'
@@ -8,8 +8,7 @@ const GridLayout = WidthProvider(Responsive);
 
 const Grid = () => {
 
-
-    const components = [
+    const initialComponents = [
         {
             type: "title",
             configuration: { text: "Un título configurado" },
@@ -27,16 +26,35 @@ const Grid = () => {
         }
     ]
 
+    const [components, setComponents] = useState(initialComponents)
+
+    const [componentCounter, setComponentCounter] = useState(initialComponents.length)
+
+
+    const onAddComponent = () => {
+        setComponents([...components, {
+            type: "title",
+            configuration: { text: "Un componente nuevo de trinqui" },
+            layout: { x: components.length * 2 % 12, y: Infinity, w: 1, h: 2 },
+        },])
+        setComponentCounter(componentCounter + 1)
+    }
+
+
+
     return (
-        <GridLayout className="layout" cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }} rowHeight={120} >
-            {
-                components.map(c => {
-                    const properties = { ...c, id: uuid() }
-                    return <div key={properties.id} data-grid={c.layout}><ComponentFactory  {...c} /></div>
+        <>
+            <button onClick={onAddComponent}>Añadir componente</button>
+            <GridLayout className="layout" cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }} rowHeight={120} >
+                {
+                    components.map(c => {
+                        const properties = { ...c, id: uuid() }
+                        return <div key={properties.id} data-grid={c.layout}><ComponentFactory  {...c} /></div>
+                    }
+                    )
                 }
-                )
-            }
-        </GridLayout>
+            </GridLayout>
+        </>
     )
 }
 
