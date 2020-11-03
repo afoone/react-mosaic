@@ -2,5 +2,8 @@
 
 TODO: 
 
-- Maintain state on new component with redux
 - Configure new component
+
+
+DONE: 
+- Maintain state on new component with redux

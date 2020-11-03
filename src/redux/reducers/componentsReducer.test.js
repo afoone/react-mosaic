@@ -1,8 +1,10 @@
 import reducer from './componentsReducer'
-import types from '../componentsActions'
+import types from '../componentsActionTypes'
 import initialState from '../initialState'
 
+
 describe('components reducer', () => {
+
     test('should return the initial state', () => {
         expect(reducer(undefined, initialState)).toEqual(initialState)
     })
@@ -12,15 +14,15 @@ describe('components reducer', () => {
             reducer(initialState, {
                 type: types.ADD_COMPONENT,
                 payload: {
-                    key: "kdljsflkdjs",
+                    id: "kdljsflkdjs",
                     type: "title",
                     configuration: { text: "Un título configurado" },
                     layout: { x: 0, y: 0, w: 1, h: 2, static: true },
                 }
             })
         ).toEqual({
-            ...initialState, components: [{
-                key: "kdljsflkdjs",
+            ...initialState, components: [...initialState.components, {
+                id: "kdljsflkdjs",
                 type: "title",
                 configuration: { text: "Un título configurado" },
                 layout: { x: 0, y: 0, w: 1, h: 2, static: true },
@@ -33,13 +35,13 @@ describe('components reducer', () => {
             reducer({
                 ...initialState, components: [
                     {
-                        key: "1",
+                        id: "1",
                         type: "title",
                         configuration: { text: "Un título configurado" },
                         layout: { x: 0, y: 0, w: 1, h: 2, static: true },
                     },
                     {
-                        key: "2",
+                        id: "2",
                         type: "title",
                         configuration: { text: "Un título configurado" },
                         layout: { x: 0, y: 0, w: 1, h: 2, static: true },
@@ -51,12 +53,73 @@ describe('components reducer', () => {
             })
         ).toEqual({
             ...initialState, components: [{
-                key: "2",
+                id: "2",
                 type: "title",
                 configuration: { text: "Un título configurado" },
                 layout: { x: 0, y: 0, w: 1, h: 2, static: true },
             }]
         })
+    })
+
+
+    test('should handle UPDATE COMPONENTS', () => {
+        expect(
+            reducer({
+                ...initialState, components: [
+                    {
+                        id: "1",
+                        type: "title",
+                        configuration: { text: "Un título configurado" },
+                        layout: { x: 0, y: 0, w: 1, h: 2, static: true },
+                    },
+                    {
+                        id: "2",
+                        type: "title",
+                        configuration: { text: "Un título configurado" },
+                        layout: { x: 0, y: 0, w: 1, h: 2, static: true },
+                    }
+                ]
+            }, {
+                type: types.UPDATE_COMPONENTS,
+                payload: [{
+                    id: "3",
+                    type: "title",
+                    configuration: { text: "Un título R" },
+                    layout: { x: 0, y: 0, w: 1, h: 2, static: true },
+                },
+                {
+                    id: "4",
+                    type: "title",
+                    configuration: { text: "Un título configurado" },
+                    layout: { x: 0, y: 0, w: 1, h: 2, static: true },
+                }]
+            })
+        ).toEqual({
+            ...initialState, components: [{
+                id: "3",
+                type: "title",
+                configuration: { text: "Un título R" },
+                layout: { x: 0, y: 0, w: 1, h: 2, static: true },
+            },
+            {
+                id: "4",
+                type: "title",
+                configuration: { text: "Un título configurado" },
+                layout: { x: 0, y: 0, w: 1, h: 2, static: true },
+            }],
+            firstRound: false
+        })
+    })
+
+    test("debe cambiar el estado de first round", () => {
+        expect(reducer(
+            { firstRound: true },
+            {
+                type: types.MAKE_FIRST_ROUND
+            }
+        )).toEqual(
+            { firstRound: false }
+        )
     })
 
 
